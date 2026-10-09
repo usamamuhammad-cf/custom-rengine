@@ -274,6 +274,7 @@ Quick Scan History
               <select id="templateSelect" class="form-select" aria-label="Select report template">
                 <option value="modern">Modern Template</option>
                 <option value="default">Default Template</option>
+                <option value="custom">Custom Template (Filtered Ports & Assets in Appendix)</option>
               </select>
             </div>
             <div class="col-md-6">
@@ -691,13 +692,13 @@ function preview_report(id, domain_name){
       onOpen: function() {
         swal.showLoading()
         return fetch(url, {
-          method: 'POST',
-          credentials: "same-origin",
-          headers: {
-            "X-CSRFToken": getCookie("csrftoken")
-          }
+          method: 'GET',
+          credentials: "same-origin"
         })
         .then(function(response) {
+          if (!response.ok) {
+            throw new Error('Server returned ' + response.status);
+          }
           return response.blob();
         }).then(function(blob) {
           const file = new Blob([blob], {type: 'application/pdf'});
